@@ -28,7 +28,7 @@ O React foi utilizado para estruturar a aplicação em componentes reutilizávei
 
 ## Contexto acadêmico
 
-Este projeto foi desenvolvido como atividade prática da disciplina de Interação Humano Computador (IHC). O trabalho tem como objetivo aplicar conceitos relacionados a design de interfaces, usabilidade e implementação de layouts a partir de protótipos.
+Este projeto foi desenvolvido como atividade prática da disciplina de Interface Humano Computador (IHC). O trabalho tem como objetivo aplicar conceitos relacionados a design de interfaces, usabilidade e implementação de layouts a partir de protótipos.
 
 ## Autores
 
