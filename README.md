@@ -1,3 +1,5 @@
+<img width="1280" height="720" alt="Weather Forecast Interface" src="https://github.com/user-attachments/assets/3be012b9-4460-49e5-b241-61355cd0fb3f" />
+
 # Weather Forecast Interface
 
 Este projeto consiste na implementação de uma interface web baseada em um protótipo criado no Figma. O trabalho foi desenvolvido como atividade da disciplina de Interação Humano Computador (IHC).
