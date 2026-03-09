@@ -32,6 +32,4 @@ Este projeto foi desenvolvido como atividade prática da disciplina de Interaç�
 
 ## Autores
 
-Caio Renato
-Caio Gabriel
-Estudantes de Ciência da Computação
+Caio Renato e Caio Gabriel - Estudantes de Ciência da Computação
