@@ -3,6 +3,9 @@ import BottomBar from './components/BottomBar'
 import ForecastStrip from './components/ForecastStrip'
 import ForecastTabs from './components/ForecastTabs'
 import HouseIllustration from './components/HouseIllustration'
+import AirQualityCard from './components/AirQualityCard'
+import UvIndexCard from './components/UvIndexCard'
+import SunriseCard from './components/SunriseCard'
 import { getMockWeatherSnapshot } from './services/mockWeather'
 
 const DEGREE = '\u00B0'
@@ -200,7 +203,7 @@ function App() {
             ref={forecastContainerRef}
             className={`overflow-hidden transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
               forecastVisible
-                ? 'mb-4 max-h-[260px] translate-y-0 opacity-100'
+                ? 'mb-4 max-h-[800px] translate-y-0 opacity-100'
                 : 'mb-0 max-h-0 translate-y-6 opacity-0 pointer-events-none'
             }`}
           >
@@ -212,6 +215,11 @@ function App() {
                 direction={forecastSlideDirection}
                 loading={false}
               />
+              <AirQualityCard visible={forecastRise > 80}/>
+              <div className='flex gap-2 mt-4 pb-12'>
+                <UvIndexCard />
+                <SunriseCard />
+              </div>
             </div>
           </div>
           <div
