@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("./assets/SFPRODISPLAYREGULAR.OTF") format("opentype");
+  font-style: normal;
+  font-weight: 300 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("./assets/SFPRODISPLAYMEDIUM.OTF") format("opentype");
+  font-style: normal;
+  font-weight: 500 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("./assets/SFPRODISPLAYBOLD.OTF") format("opentype");
+  font-style: normal;
+  font-weight: 700 800;
+  font-display: swap;
+}
+
+:root {
+  font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", sans-serif;
+  color: #f5f5ff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background-color: #9d68d5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.weather-stars {
+  background-image:
+    radial-gradient(circle at 18px 24px, rgba(255, 255, 255, 0.95) 0 1.1px, transparent 1.4px),
+    radial-gradient(circle at 66px 72px, rgba(255, 255, 255, 0.68) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 34px 96px, rgba(255, 255, 255, 0.78) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 88px 32px, rgba(180, 216, 255, 0.7) 0 1.2px, transparent 1.6px);
+  background-size: 110px 110px, 140px 140px, 175px 175px, 220px 220px;
+}
+
+.forecast-scrollbar::-webkit-scrollbar {
+  height: 5px;
+}
+
+.forecast-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.city-screen-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.city-screen-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.temperature-value {
+  font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.main-temperature {
+  font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", sans-serif;
+  font-weight: 100;
+  letter-spacing: -0.03em;
+  font-synthesis: weight;
+}
+
+.sf-pro-display {
+  font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.sf-pro-text {
+  font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.liquid-glass-press {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.22s ease,
+    filter 0.22s ease;
+}
+
+.liquid-glass-press::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 20% 14%, rgba(255, 255, 255, 0.45), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.liquid-glass-press:active {
+  transform: scale(0.965);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -14px 24px rgba(87, 145, 255, 0.14),
+    0 8px 18px rgba(14, 9, 48, 0.35);
+  filter: saturate(1.15);
+}
+
+.liquid-glass-press:active::after {
+  opacity: 1;
+}
+
+.plus-liquid-glass {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    box-shadow 0.22s ease,
+    filter 0.22s ease;
+}
+
+.plus-liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 25% 18%, rgba(255, 255, 255, 0.58), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.plus-liquid-glass-icon {
+  transition: transform 0.18s ease;
+}
+
+.plus-liquid-glass:active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -14px 20px rgba(130, 176, 255, 0.22),
+    0 6px 14px rgba(11, 10, 40, 0.36);
+  filter: saturate(1.12);
+}
+
+.plus-liquid-glass:active::after {
+  opacity: 1;
+}
+
+.plus-liquid-glass:active .plus-liquid-glass-icon {
+  transform: scale(0.93);
+}
+
+.weather-icon {
+  filter: drop-shadow(0 0 6px rgba(164, 206, 255, 0.35));
+}
+
+.forecast-slide-left {
+  animation: forecast-slide-left 260ms cubic-bezier(0.22, 0.82, 0.2, 1);
+}
+
+.forecast-slide-right {
+  animation: forecast-slide-right 260ms cubic-bezier(0.22, 0.82, 0.2, 1);
+}
+
+.snowflake {
+  position: absolute;
+  top: -16px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0 55%, rgba(255, 255, 255, 0.45) 70%, transparent 100%);
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  animation: snowfall var(--snow-duration, 7s) linear var(--snow-delay, 0s) infinite;
+}
+
+@keyframes forecast-slide-left {
+  0% {
+    opacity: 0.3;
+    transform: translateX(22px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes forecast-slide-right {
+  0% {
+    opacity: 0.3;
+    transform: translateX(-22px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translate3d(0, -18px, 0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  55% {
+    transform: translate3d(var(--snow-drift, 10px), 118px, 0);
+  }
+
+  100% {
+    transform: translate3d(calc(var(--snow-drift, 10px) * -0.65), 248px, 0);
+    opacity: 0;
+  }
+}
