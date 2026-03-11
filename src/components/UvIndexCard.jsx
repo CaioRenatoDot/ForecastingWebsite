@@ -1,4 +1,11 @@
-const UVIndexCard = () => {
+const UVIndexCard = ({ value, label }) => {
+  const hasValue = Number.isFinite(value)
+  const displayValue = hasValue ? Math.round(value) : '--'
+  const displayLabel = label ?? (hasValue ? '' : 'Unavailable')
+  const markerLeft = hasValue
+    ? `${Math.min(100, Math.max(0, (Math.min(value, 11) / 11) * 100))}%`
+    : '0%'
+
   return (
     <div className="liquid-glass-press rounded-[24px] bg-[rgba(46,31,90,0.5)] border border-white/10 p-5 text-white backdrop-blur-md flex-1">
       {/* Header */}
@@ -10,15 +17,15 @@ const UVIndexCard = () => {
       </div>
 
       {/* Conteúdo */}
-      <div className="text-3xl font-bold">4</div>
-      <div className="text-lg font-medium mb-4">Moderate</div>
+      <div className="text-3xl font-bold">{displayValue}</div>
+      <div className="text-lg font-medium mb-4">{displayLabel}</div>
 
       {/* Barra de progresso do UV */}
       <div className="relative w-full h-1 bg-white/10 rounded-full">
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500" />
         <div 
           className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_8px_white]" 
-          style={{ left: '35%' }} 
+          style={{ left: markerLeft }} 
         />
       </div>
     </div>

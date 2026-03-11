@@ -58,7 +58,6 @@ const HOURLY_FORECAST = [
 const WEEKLY_FORECAST = [
   {
     id: 'weekly-mon',
-    label: 'MON',
     temp: 20,
     detail: '30%',
     condition: 'Rain',
@@ -66,7 +65,6 @@ const WEEKLY_FORECAST = [
   },
   {
     id: 'weekly-tue',
-    label: 'TUE',
     temp: 21,
     detail: '30%',
     condition: 'Rain',
@@ -74,7 +72,6 @@ const WEEKLY_FORECAST = [
   },
   {
     id: 'weekly-wed',
-    label: 'WEBS',
     temp: 18,
     detail: '100%',
     condition: 'Rain',
@@ -82,7 +79,6 @@ const WEEKLY_FORECAST = [
   },
   {
     id: 'weekly-thu',
-    label: 'THU',
     temp: 20,
     detail: '50%',
     condition: 'Snow',
@@ -90,7 +86,6 @@ const WEEKLY_FORECAST = [
   },
   {
     id: 'weekly-fri',
-    label: 'FRI',
     temp: 22,
     detail: '30%',
     condition: 'Rain',
@@ -98,7 +93,20 @@ const WEEKLY_FORECAST = [
   },
 ]
 
+function buildWeeklyLabels(count) {
+  const formatter = new Intl.DateTimeFormat('en-US', { weekday: 'short' })
+  const today = new Date()
+
+  return Array.from({ length: count }, (_, index) => {
+    const date = new Date(today)
+    date.setDate(today.getDate() + index)
+    return formatter.format(date).toUpperCase()
+  })
+}
+
 export function getMockWeatherSnapshot() {
+  const weeklyLabels = buildWeeklyLabels(WEEKLY_FORECAST.length)
+
   return {
     city: 'Montreal',
     statusTime: '1:41',
@@ -107,6 +115,13 @@ export function getMockWeatherSnapshot() {
     tempMin: 18,
     condition: 'Mostly clear',
     hourly: HOURLY_FORECAST.map((item) => ({ ...item })),
-    weekly: WEEKLY_FORECAST.map((item) => ({ ...item })),
+    weekly: WEEKLY_FORECAST.map((item, index) => ({
+      ...item,
+      label: weeklyLabels[index],
+    })),
+    airQuality: { aqi: 3, label: 'Moderate' },
+    uvIndex: { value: 4, label: 'Moderate' },
+    sunrise: '5:28 AM',
+    sunset: '7:25 PM',
   }
 }

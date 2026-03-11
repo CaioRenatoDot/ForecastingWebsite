@@ -10,7 +10,7 @@ function BottomBar() {
           <img
             src={backBarImage}
             alt="Barra inferior"
-            className="h-full w-full object-contain"
+            className="h-full w-full object-contain opacity-55"
             loading="lazy"
           />
         </div>

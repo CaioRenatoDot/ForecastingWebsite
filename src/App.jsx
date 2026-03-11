@@ -7,6 +7,11 @@ import AirQualityCard from './components/AirQualityCard'
 import UvIndexCard from './components/UvIndexCard'
 import SunriseCard from './components/SunriseCard'
 import { getMockWeatherSnapshot } from './services/mockWeather'
+import { fetchWeatherSnapshot } from './services/openWeather'
+import appBackgroundImage from './assets/Image.png'
+import batteryIcon from './assets/Battery.png'
+import wifiIcon from './assets/Wifi.png'
+import mobileSignalIcon from './assets/Mobile Signal.png'
 
 const DEGREE = '\u00B0'
 const FORECAST_MAX_RISE = 440
@@ -21,8 +26,9 @@ function formatLocalTime(date = new Date()) {
 function App() {
   const [mode, setMode] = useState('hourly')
   const [forecastSlideDirection, setForecastSlideDirection] = useState('right')
-  const [snapshot] = useState(() => getMockWeatherSnapshot())
-  const [forecastVisible, setForecastVisible] = useState(true)
+  const [snapshot, setSnapshot] = useState(() => getMockWeatherSnapshot())
+  const [snapshotError, setSnapshotError] = useState('')
+  const [forecastVisible, setForecastVisible] = useState(false)
   const [localTime, setLocalTime] = useState(() => formatLocalTime())
   const [forecastRise, setForecastRise] = useState(0)
   const [draggingForecast, setDraggingForecast] = useState(false)
@@ -120,6 +126,50 @@ function App() {
   }, [])
 
   useEffect(() => {
+    let mounted = true
+
+    const loadSnapshot = async (options) => {
+      try {
+        const data = await fetchWeatherSnapshot(options)
+        if (mounted) {
+          setSnapshot(data)
+          setSnapshotError('')
+        }
+      } catch (error) {
+        if (mounted) {
+          setSnapshotError(
+            error instanceof Error ? error.message : 'Unable to load weather data.',
+          )
+        }
+      }
+    }
+
+    if (!('geolocation' in navigator)) {
+      setSnapshotError('Geolocation is unavailable. Using the default city.')
+      loadSnapshot()
+      return () => {
+        mounted = false
+      }
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords
+        loadSnapshot({ lat: latitude, lon: longitude })
+      },
+      () => {
+        setSnapshotError('Location permission denied. Using the default city.')
+        loadSnapshot()
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+    )
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
     forecastRiseRef.current = forecastRise
   }, [forecastRise])
 
@@ -157,17 +207,40 @@ function App() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#9d68d5] px-4 py-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.35),transparent_35%),radial-gradient(circle_at_85%_10%,rgba(255,255,255,0.25),transparent_32%),radial-gradient(circle_at_10%_85%,rgba(86,46,139,0.35),transparent_45%)]" />
-      <section className="relative h-[844px] w-[390px] overflow-hidden rounded-[42px] border border-white/20 bg-[#3f3b88] shadow-[0_24px_80px_rgba(23,10,52,0.45)]">
-        <div className="weather-stars pointer-events-none absolute inset-0 opacity-80" />
+      <section className="relative h-211 w-97.5 overflow-hidden rounded-[42px] border border-white/20 bg-[#3f3b88] shadow-[0_24px_80px_rgba(23,10,52,0.45)]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-80"
+          style={{
+            backgroundImage: `url(${appBackgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[280px] bg-[linear-gradient(180deg,rgba(97,119,165,0)_0%,rgba(95,133,170,0.5)_30%,rgba(63,52,126,0.95)_100%)]" />
 
         <div className="relative z-10 px-7 pt-5 text-white">
           <header className="flex items-center justify-between text-xs font-medium text-white/90">
             <span>{localTime}</span>
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full border border-white/80" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/80" />
-              <span className="h-2.5 w-5 rounded-sm border border-white/80" />
+              <img
+                src={mobileSignalIcon}
+                alt="Sinal"
+                className="h-3 w-auto"
+                loading="lazy"
+              />
+              <img
+                src={wifiIcon}
+                alt="Wi‑Fi"
+                className="h-3 w-auto"
+                loading="lazy"
+              />
+              <img
+                src={batteryIcon}
+                alt="Bateria"
+                className="h-3 w-auto"
+                loading="lazy"
+              />
             </div>
           </header>
 
@@ -184,6 +257,11 @@ function App() {
             <p className="sf-pro-text mt-2 text-[20px] font-semibold text-white/90">
               H:{`${snapshot.tempMax}${DEGREE}`}/L:{`${snapshot.tempMin}${DEGREE}`}
             </p>
+            {snapshotError ? (
+              <p className="sf-pro-text mt-3 text-[14px] font-medium text-white/80">
+                {snapshotError}
+              </p>
+            ) : null}
           </div>
         </div>
         <HouseIllustration />
@@ -194,7 +272,7 @@ function App() {
           onPointerMove={handleForecastPointerMove}
           onPointerUp={finishForecastDrag}
           onPointerCancel={finishForecastDrag}
-          className="absolute inset-x-0 bottom-0 z-20 rounded-t-[36px] border-t border-white/25 bg-[linear-gradient(180deg,rgba(116,94,173,0.85)_0%,rgba(68,67,137,0.92)_36%,rgba(48,54,111,0.97)_100%)] px-4 pt-4 backdrop-blur-md touch-pan-x"
+          className="absolute inset-x-0 bottom-0 z-20 rounded-t-[36px] border-t border-white/22 bg-[linear-gradient(180deg,rgba(46,51,90,0.26)_0%,rgba(28,27,51,0.26)_100%)] px-4 pt-4 backdrop-blur-xl touch-pan-x"
         >
           <div className="mb-3 flex justify-center">
             <span className="h-1.5 w-12 rounded-full bg-white/30" />
@@ -203,7 +281,7 @@ function App() {
             ref={forecastContainerRef}
             className={`overflow-hidden transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
               forecastVisible
-                ? 'mb-4 max-h-[800px] translate-y-0 opacity-100'
+                ? 'mb-4 max-h-200 translate-y-0 opacity-100'
                 : 'mb-0 max-h-0 translate-y-6 opacity-0 pointer-events-none'
             }`}
           >
@@ -215,10 +293,14 @@ function App() {
                 direction={forecastSlideDirection}
                 loading={false}
               />
-              <AirQualityCard visible={forecastRise > 80}/>
+              <AirQualityCard
+                visible={true}
+                aqi={snapshot.airQuality?.aqi}
+                label={snapshot.airQuality?.label}
+              />
               <div className='flex gap-2 mt-4 pb-12'>
-                <UvIndexCard />
-                <SunriseCard />
+                <UvIndexCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
+                <SunriseCard sunrise={snapshot.sunrise} sunset={snapshot.sunset} />
               </div>
             </div>
           </div>

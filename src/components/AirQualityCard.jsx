@@ -1,4 +1,8 @@
-const AirQualityCard = ({visible=false}) => {
+const AirQualityCard = ({ visible = false, aqi, label }) => {
+  const hasValue = Number.isFinite(aqi)
+  const displayTitle = hasValue ? `${aqi} - ${label ?? 'Air Quality'}` : 'Air quality unavailable'
+  const markerLeft = hasValue ? `${Math.min(100, Math.max(0, (aqi / 5) * 100))}%` : '0%'
+
   return (
     <div
       className={`transition-all duration-500 ease-out overflow-hidden ${
@@ -7,7 +11,7 @@ const AirQualityCard = ({visible=false}) => {
           : 'max-h-0 opacity-0 mt-0 pointer-events-none'
       }`}
     >
-    <div className="mt-4 w-full rounded-[24px] bg-[rgba(46,31,90,0.5)] border border-white/10 p-5 text-white shadow-lg backdrop-blur-md">
+    <div className="liquid-glass-press mt-4 w-full rounded-[24px] border border-white/16 bg-[linear-gradient(180deg,rgba(85,70,150,0.45)_0%,rgba(46,31,90,0.62)_100%)] p-5 text-white shadow-[0_16px_32px_rgba(16,10,50,0.45)] backdrop-blur-md">
       <div className="flex items-center gap-2 mb-3 text-[12px] font-semibold tracking-wider text-white/50 uppercase">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round opacity-70">
             <circle cx="12" cy="12" r="1" /><circle cx="12" cy="5" r="1" /><circle cx="12" cy="19" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /><circle cx="17" cy="17" r="1" /><circle cx="7" cy="7" r="1" /><circle cx="17" cy="7" r="1" /><circle cx="7" cy="17" r="1" />
@@ -15,13 +19,13 @@ const AirQualityCard = ({visible=false}) => {
         <span>Air Quality</span>
       </div>
 
-      <h2 className="text-xl font-bold mb-5">3-Low Health Risk</h2>
+      <h2 className="text-xl font-bold mb-5">{displayTitle}</h2>
 
       <div className="relative w-full h-1 bg-white/10 rounded-full mb-6">
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#3b82f6] via-[#a855f7] to-[#ec4899]" />
         <div 
           className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-[0_0_8px_white]"
-          style={{ left: '25%' }} 
+          style={{ left: markerLeft }} 
         />
       </div>
 

@@ -21,7 +21,7 @@ function ForecastStrip({ items, mode, direction = 'right', loading }) {
   if (items.length === 0) {
     return (
       <div className="mt-4 rounded-2xl border border-white/20 bg-white/8 p-4 text-sm text-white/80">
-        Sem previsoes disponiveis.
+        No forecasts available.
       </div>
     )
   }
@@ -34,7 +34,14 @@ function ForecastStrip({ items, mode, direction = 'right', loading }) {
       >
         <ul className="flex gap-2.5">
           {items.map((item, index) => {
-            const isActive = index === 0
+            const isActive =
+              mode === 'hourly'
+                ? String(item.id ?? '')
+                    .toLowerCase()
+                    .includes('now') ||
+                  String(item.label ?? '')
+                    .toLowerCase() === 'now'
+                : index === 0
 
             return (
               <li key={item.id} className="w-[82px] shrink-0">

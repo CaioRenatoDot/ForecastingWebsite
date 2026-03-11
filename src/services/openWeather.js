@@ -1,4 +1,5 @@
 const OPEN_WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5'
+const OPEN_WEATHER_ONECALL_URL = 'https://api.openweathermap.org/data/3.0'
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const DEFAULT_CITY = 'Montreal'
 
@@ -35,11 +36,39 @@ function formatDayLabel(unixTimeInSeconds, timezoneOffsetInSeconds) {
   return DAY_NAMES[date.getUTCDay()]
 }
 
+function getAirQualityLabel(aqi) {
+  switch (aqi) {
+    case 1:
+      return 'Good'
+    case 2:
+      return 'Fair'
+    case 3:
+      return 'Moderate'
+    case 4:
+      return 'Poor'
+    case 5:
+      return 'Very Poor'
+    default:
+      return 'Unavailable'
+  }
+}
+
+function getUvRiskLabel(value) {
+  if (!Number.isFinite(value)) {
+    return 'Unavailable'
+  }
+  if (value < 3) return 'Low'
+  if (value < 6) return 'Moderate'
+  if (value < 8) return 'High'
+  if (value < 11) return 'Very High'
+  return 'Extreme'
+}
+
 async function requestJson(url) {
   const response = await fetch(url)
 
   if (!response.ok) {
-    let message = `Erro ${response.status} ao consultar OpenWeatherMap.`
+    let message = `OpenWeatherMap request failed (${response.status}).`
     try {
       const errorData = await response.json()
       if (errorData?.message) {
@@ -120,16 +149,19 @@ function buildWeeklyForecast(forecastList, timezoneOffsetInSeconds) {
     })
 }
 
-export async function fetchWeatherSnapshot(city = DEFAULT_CITY) {
+export async function fetchWeatherSnapshot({ city = DEFAULT_CITY, lat, lon } = {}) {
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
   if (!apiKey) {
-    throw new Error('Defina VITE_OPENWEATHER_API_KEY no arquivo .env para usar a API.')
+    throw new Error('Set VITE_OPENWEATHER_API_KEY in .env to use the API.')
   }
 
-  const encodedCity = encodeURIComponent(city)
-  const weatherUrl = `${OPEN_WEATHER_BASE_URL}/weather?q=${encodedCity}&appid=${apiKey}&units=metric&lang=en`
-  const forecastUrl = `${OPEN_WEATHER_BASE_URL}/forecast?q=${encodedCity}&appid=${apiKey}&units=metric&lang=en`
+  const hasCoords = Number.isFinite(lat) && Number.isFinite(lon)
+  const locationQuery = hasCoords
+    ? `lat=${lat}&lon=${lon}`
+    : `q=${encodeURIComponent(city)}`
+  const weatherUrl = `${OPEN_WEATHER_BASE_URL}/weather?${locationQuery}&appid=${apiKey}&units=metric&lang=en`
+  const forecastUrl = `${OPEN_WEATHER_BASE_URL}/forecast?${locationQuery}&appid=${apiKey}&units=metric&lang=en`
 
   const [currentWeather, forecastWeather] = await Promise.all([
     requestJson(weatherUrl),
@@ -137,6 +169,38 @@ export async function fetchWeatherSnapshot(city = DEFAULT_CITY) {
   ])
 
   const timezoneOffset = currentWeather.timezone ?? 0
+  const coordLat = currentWeather.coord?.lat
+  const coordLon = currentWeather.coord?.lon
+  let airQuality = null
+  let uvIndex = null
+
+  if (Number.isFinite(coordLat) && Number.isFinite(coordLon)) {
+    try {
+      const airData = await requestJson(
+        `${OPEN_WEATHER_BASE_URL}/air_pollution?lat=${coordLat}&lon=${coordLon}&appid=${apiKey}`,
+      )
+      const aqiValue = airData?.list?.[0]?.main?.aqi ?? null
+      airQuality = {
+        aqi: aqiValue,
+        label: getAirQualityLabel(aqiValue),
+      }
+    } catch {
+      airQuality = null
+    }
+
+    try {
+      const oneCallData = await requestJson(
+        `${OPEN_WEATHER_ONECALL_URL}/onecall?lat=${coordLat}&lon=${coordLon}&appid=${apiKey}&units=metric&lang=en`,
+      )
+      const uvValue = oneCallData?.current?.uvi ?? null
+      uvIndex = {
+        value: uvValue,
+        label: getUvRiskLabel(uvValue),
+      }
+    } catch {
+      uvIndex = null
+    }
+  }
 
   return {
     city: currentWeather.name,
@@ -147,5 +211,13 @@ export async function fetchWeatherSnapshot(city = DEFAULT_CITY) {
     condition: toTitleCase(currentWeather.weather[0]?.description ?? 'Clear sky'),
     hourly: buildHourlyForecast(currentWeather, forecastWeather.list ?? [], timezoneOffset),
     weekly: buildWeeklyForecast(forecastWeather.list ?? [], timezoneOffset),
+    airQuality,
+    uvIndex,
+    sunrise: currentWeather.sys?.sunrise
+      ? formatHourLabel(currentWeather.sys.sunrise, timezoneOffset)
+      : null,
+    sunset: currentWeather.sys?.sunset
+      ? formatHourLabel(currentWeather.sys.sunset, timezoneOffset)
+      : null,
   }
 }

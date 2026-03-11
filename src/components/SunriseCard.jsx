@@ -1,4 +1,7 @@
-const SunriseCard = () => {
+const SunriseCard = ({ sunrise, sunset }) => {
+  const displaySunrise = sunrise ?? '--'
+  const displaySunset = sunset ?? '--'
+
   return (
     <div className="liquid-glass-press rounded-[24px] bg-[rgba(46,31,90,0.5)] border border-white/10 p-5 text-white backdrop-blur-md flex-1">
       {/* Header */}
@@ -10,7 +13,7 @@ const SunriseCard = () => {
       </div>
 
       {/* Conteúdo */}
-      <div className="text-2xl font-bold leading-tight">5:28 AM</div>
+      <div className="text-2xl font-bold leading-tight">{displaySunrise}</div>
       
       {/* Gráfico da curva do sol */}
       <div className="relative mt-4 h-10 w-full border-b border-white/10">
@@ -22,7 +25,7 @@ const SunriseCard = () => {
       </div>
 
       <div className="mt-2 text-[12px] text-white/50">
-        Sunset: 7:25PM
+        Sunset: {displaySunset}
       </div>
     </div>
   );
