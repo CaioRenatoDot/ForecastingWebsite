@@ -7,6 +7,23 @@ function toTitleCase(value) {
   return value.replace(/\b\w/g, (character) => character.toUpperCase())
 }
 
+function resolveCountryName(countryCode) {
+  if (!countryCode) {
+    return null
+  }
+
+  try {
+    if (typeof Intl !== 'undefined' && Intl.DisplayNames) {
+      const displayNames = new Intl.DisplayNames(['en'], { type: 'region' })
+      return displayNames.of(countryCode) ?? countryCode
+    }
+  } catch {
+    // Ignore and fall back to the country code.
+  }
+
+  return countryCode
+}
+
 function buildIconUrl(iconCode) {
   return `https://openweathermap.org/img/wn/${iconCode}@2x.png`
 }
@@ -149,6 +166,49 @@ function buildWeeklyForecast(forecastList, timezoneOffsetInSeconds) {
     })
 }
 
+function buildDailyRange(currentWeather, forecastList, timezoneOffsetInSeconds) {
+  const baseTemps = []
+  const currentTemp = currentWeather?.main?.temp
+  const currentMin = currentWeather?.main?.temp_min
+  const currentMax = currentWeather?.main?.temp_max
+
+  if (Number.isFinite(currentTemp)) baseTemps.push(currentTemp)
+  if (Number.isFinite(currentMin)) baseTemps.push(currentMin)
+  if (Number.isFinite(currentMax)) baseTemps.push(currentMax)
+
+  const now = currentWeather?.dt ?? Math.floor(Date.now() / 1000)
+  const next24HoursTemps = (forecastList ?? [])
+    .filter(
+      (item) =>
+        Number.isFinite(item.dt) &&
+        item.dt >= now &&
+        item.dt <= now + 24 * 60 * 60,
+    )
+    .map((item) => item.main?.temp)
+    .filter(Number.isFinite)
+
+  const dayKey = getDateKey(now, timezoneOffsetInSeconds)
+  const todayTemps = (forecastList ?? [])
+    .filter((item) => getDateKey(item.dt, timezoneOffsetInSeconds) === dayKey)
+    .map((item) => item.main?.temp)
+    .filter(Number.isFinite)
+
+  const temps = next24HoursTemps.length
+    ? next24HoursTemps
+    : todayTemps.length
+      ? todayTemps
+      : baseTemps
+
+  if (!temps.length) {
+    return { tempMax: null, tempMin: null }
+  }
+
+  return {
+    tempMax: Math.round(Math.max(...temps)),
+    tempMin: Math.round(Math.min(...temps)),
+  }
+}
+
 export async function fetchWeatherSnapshot({ city = DEFAULT_CITY, lat, lon } = {}) {
   const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
@@ -202,12 +262,22 @@ export async function fetchWeatherSnapshot({ city = DEFAULT_CITY, lat, lon } = {
     }
   }
 
+  const dailyRange = buildDailyRange(
+    currentWeather,
+    forecastWeather.list ?? [],
+    timezoneOffset,
+  )
+
   return {
     city: currentWeather.name,
+    country: resolveCountryName(currentWeather.sys?.country),
+    countryCode: currentWeather.sys?.country ?? null,
     statusTime: formatHourLabel(Math.floor(Date.now() / 1000), timezoneOffset),
     temperature: Math.round(currentWeather.main.temp),
-    tempMax: Math.round(currentWeather.main.temp_max),
-    tempMin: Math.round(currentWeather.main.temp_min),
+    tempMax:
+      dailyRange.tempMax ?? Math.round(currentWeather.main.temp_max ?? currentWeather.main.temp),
+    tempMin:
+      dailyRange.tempMin ?? Math.round(currentWeather.main.temp_min ?? currentWeather.main.temp),
     condition: toTitleCase(currentWeather.weather[0]?.description ?? 'Clear sky'),
     hourly: buildHourlyForecast(currentWeather, forecastWeather.list ?? [], timezoneOffset),
     weekly: buildWeeklyForecast(forecastWeather.list ?? [], timezoneOffset),
