@@ -11,6 +11,7 @@ import RainfallCard from './components/RainFallCard'
 import FeelsLikeCard from './components/FeelsLikeCard'
 import HumidityCard from './components/HumidityCard'
 import VisibilityCard from './components/VisibilityCard'
+import PressureCard from './components/PressureCard'
 import { fetchWeatherSnapshot } from './services/openWeather'
 import appBackgroundImage from './assets/Image.png'
 import batteryIcon from './assets/Battery.png'
@@ -648,6 +649,10 @@ function App() {
                       unit="km"
                       description="Similar to the actual temperature."
                     />
+                      <PressureCard
+                        value={snapshot.pressure ?? 1013}
+                        unit="hPa"
+                      />
                   </div>
                 </>
               ) : (
