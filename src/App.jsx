@@ -8,6 +8,7 @@ import UvIndexCard from './components/UvIndexCard'
 import SunriseCard from './components/SunriseCard'
 import WindCard from './components/WindCard'
 import RainfallCard from './components/RainFallCard'
+import FeelsLikeCard from './components/FeelsLikeCard'
 import { fetchWeatherSnapshot } from './services/openWeather'
 import appBackgroundImage from './assets/Image.png'
 import batteryIcon from './assets/Battery.png'
@@ -627,6 +628,13 @@ function App() {
                   <div className="flex gap-2 mt-2">
                     <WindCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
                     <RainfallCard rainfall={snapshot.rainfall} />
+                  </div>
+
+                  <div className='flex gap-2 mt-2'>
+                    <FeelsLikeCard
+                        value={snapshot.FeelsLikeCard}
+                        unit={DEGREE}
+                      />
                   </div>
                 </>
               ) : (
