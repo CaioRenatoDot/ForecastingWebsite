@@ -109,6 +109,8 @@ export function getMockWeatherSnapshot() {
 
   return {
     city: 'Montreal',
+    country: 'Canada',
+    countryCode: 'CA',
     statusTime: '1:41',
     temperature: 19,
     tempMax: 24,
