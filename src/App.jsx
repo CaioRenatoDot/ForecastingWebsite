@@ -9,6 +9,7 @@ import SunriseCard from './components/SunriseCard'
 import WindCard from './components/WindCard'
 import RainfallCard from './components/RainFallCard'
 import FeelsLikeCard from './components/FeelsLikeCard'
+import HumidityCard from './components/HumidityCard'
 import { fetchWeatherSnapshot } from './services/openWeather'
 import appBackgroundImage from './assets/Image.png'
 import batteryIcon from './assets/Battery.png'
@@ -634,6 +635,10 @@ function App() {
                     <FeelsLikeCard
                         value={snapshot.FeelsLikeCard}
                         unit={DEGREE}
+                      />
+                    <HumidityCard
+                        value={snapshot.HumidityCard}
+                        dewPoint={snapshot.dewPoint || 17}
                       />
                   </div>
                 </>
