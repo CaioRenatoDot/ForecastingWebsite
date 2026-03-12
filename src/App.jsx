@@ -10,6 +10,7 @@ import WindCard from './components/WindCard'
 import RainfallCard from './components/RainFallCard'
 import FeelsLikeCard from './components/FeelsLikeCard'
 import HumidityCard from './components/HumidityCard'
+import VisibilityCard from './components/VisibilityCard'
 import { fetchWeatherSnapshot } from './services/openWeather'
 import appBackgroundImage from './assets/Image.png'
 import batteryIcon from './assets/Battery.png'
@@ -640,6 +641,13 @@ function App() {
                         value={snapshot.HumidityCard}
                         dewPoint={snapshot.dewPoint || 17}
                       />
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <VisibilityCard
+                      value={snapshot.visibility ?? 8}
+                      unit="km"
+                      description="Similar to the actual temperature."
+                    />
                   </div>
                 </>
               ) : (
