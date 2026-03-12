@@ -629,19 +629,23 @@ function App() {
                     <SunriseCard sunrise={snapshot.sunrise} sunset={snapshot.sunset} />
                   </div>
                   <div className="flex gap-2 mt-2">
-                    <WindCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
+                    <WindCard
+                      speed={snapshot.wind?.speed}
+                      gust={snapshot.wind?.gust}
+                      deg={snapshot.wind?.deg}
+                    />
                     <RainfallCard rainfall={snapshot.rainfall} />
                   </div>
 
                   <div className='flex gap-2 mt-2'>
                     <FeelsLikeCard
-                        value={snapshot.FeelsLikeCard}
-                        unit={DEGREE}
-                      />
+                      value={snapshot.feelsLike}
+                      unit={DEGREE}
+                    />
                     <HumidityCard
-                        value={snapshot.HumidityCard}
-                        dewPoint={snapshot.dewPoint || 17}
-                      />
+                      value={snapshot.humidity}
+                      dewPoint={snapshot.dewPoint || 17}
+                    />
                   </div>
                   <div className="flex gap-2 mt-2">
                     <VisibilityCard

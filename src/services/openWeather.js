@@ -274,6 +274,13 @@ export async function fetchWeatherSnapshot({ city = DEFAULT_CITY, lat, lon } = {
     countryCode: currentWeather.sys?.country ?? null,
     statusTime: formatHourLabel(Math.floor(Date.now() / 1000), timezoneOffset),
     temperature: Math.round(currentWeather.main.temp),
+    feelsLike: Math.round(currentWeather.main.feels_like ?? currentWeather.main.temp),
+    pressure: Number.isFinite(currentWeather.main?.pressure)
+      ? Math.round(currentWeather.main.pressure)
+      : null,
+    humidity: Number.isFinite(currentWeather.main?.humidity)
+      ? Math.round(currentWeather.main.humidity)
+      : null,
     tempMax:
       dailyRange.tempMax ?? Math.round(currentWeather.main.temp_max ?? currentWeather.main.temp),
     tempMin:
@@ -283,6 +290,11 @@ export async function fetchWeatherSnapshot({ city = DEFAULT_CITY, lat, lon } = {
     weekly: buildWeeklyForecast(forecastWeather.list ?? [], timezoneOffset),
     airQuality,
     uvIndex,
+    wind: {
+      speed: currentWeather.wind?.speed ?? null,
+      gust: currentWeather.wind?.gust ?? null,
+      deg: currentWeather.wind?.deg ?? null,
+    },
     sunrise: currentWeather.sys?.sunrise
       ? formatHourLabel(currentWeather.sys.sunrise, timezoneOffset)
       : null,
