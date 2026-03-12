@@ -6,6 +6,8 @@ import HouseIllustration from './components/HouseIllustration'
 import AirQualityCard from './components/AirQualityCard'
 import UvIndexCard from './components/UvIndexCard'
 import SunriseCard from './components/SunriseCard'
+import WindCard from './components/WindCard'
+import RainfallCard from './components/RainFallCard'
 import { getMockWeatherSnapshot } from './services/mockWeather'
 import { fetchWeatherSnapshot } from './services/openWeather'
 import appBackgroundImage from './assets/Image.png'
@@ -281,10 +283,10 @@ function App() {
             ref={forecastContainerRef}
             className={`overflow-hidden transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
               forecastVisible
-                ? 'mb-4 max-h-200 translate-y-0 opacity-100'
+                ? 'mb-4 max-h-[1000px] translate-y-0 opacity-100'
                 : 'mb-0 max-h-0 translate-y-6 opacity-0 pointer-events-none'
             }`}
-          >
+          >    
             <div>
               <ForecastTabs mode={mode} onModeChange={handleModeChange} />
               <ForecastStrip
@@ -298,9 +300,13 @@ function App() {
                 aqi={snapshot.airQuality?.aqi}
                 label={snapshot.airQuality?.label}
               />
-              <div className='flex gap-2 mt-4 pb-12'>
+              <div className='flex gap-2 mt-4'>
                 <UvIndexCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
                 <SunriseCard sunrise={snapshot.sunrise} sunset={snapshot.sunset} />
+              </div>
+              <div className='flex gap-2 mt-2'>
+                <WindCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
+                <RainfallCard rainfall={snapshot.rainfall}/>
               </div>
             </div>
           </div>
