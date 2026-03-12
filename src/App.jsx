@@ -8,7 +8,6 @@ import UvIndexCard from './components/UvIndexCard'
 import SunriseCard from './components/SunriseCard'
 import WindCard from './components/WindCard'
 import RainfallCard from './components/RainFallCard'
-import { getMockWeatherSnapshot } from './services/mockWeather'
 import { fetchWeatherSnapshot } from './services/openWeather'
 import appBackgroundImage from './assets/Image.png'
 import batteryIcon from './assets/Battery.png'
@@ -121,8 +120,9 @@ function App() {
   const ui = UI_TEXT
   const [mode, setMode] = useState('hourly')
   const [forecastSlideDirection, setForecastSlideDirection] = useState('right')
-  const [snapshot, setSnapshot] = useState(() => getMockWeatherSnapshot())
+  const [snapshot, setSnapshot] = useState(null)
   const [snapshotError, setSnapshotError] = useState('')
+  const [isLoadingSnapshot, setIsLoadingSnapshot] = useState(true)
   const [forecastVisible, setForecastVisible] = useState(false)
   const [localTime, setLocalTime] = useState(() => formatLocalTime())
   const [forecastRise, setForecastRise] = useState(0)
@@ -158,6 +158,7 @@ function App() {
   const clampForecastRise = (value) => Math.min(FORECAST_MAX_RISE, Math.max(0, value))
 
   const forecastItems = mode === 'hourly' ? snapshot?.hourly ?? [] : snapshot?.weekly ?? []
+  const hasSnapshot = Boolean(snapshot)
 
   const openCityScreen = () => {
     setCityScreenOpen(true)
@@ -367,6 +368,7 @@ function App() {
     let mounted = true
 
     const loadSnapshot = async (options) => {
+      setIsLoadingSnapshot(true)
       try {
         const data = await fetchWeatherSnapshot(options)
         if (mounted) {
@@ -378,6 +380,10 @@ function App() {
           setSnapshotError(
             error instanceof Error ? error.message : ui.unableToLoad,
           )
+        }
+      } finally {
+        if (mounted) {
+          setIsLoadingSnapshot(false)
         }
       }
     }
@@ -548,18 +554,29 @@ function App() {
           </header>
 
           <div className="mt-12 text-center">
-            <p className="text-[45px] font-light leading-none tracking-tight">
-              {snapshot.city}
-            </p>
-            <p className="temperature-value main-temperature mt-2 text-[96px] leading-none">
-              {`${snapshot.temperature}${DEGREE}`}
-            </p>
-            <p className="sf-pro-text mt-2 text-[20px] font-semibold text-white">
-              {snapshot.condition}
-            </p>
-            <p className="sf-pro-text mt-2 text-[20px] font-semibold text-white/90">
-              H:{`${snapshot.tempMax}${DEGREE}`}/L:{`${snapshot.tempMin}${DEGREE}`}
-            </p>
+            {hasSnapshot ? (
+              <>
+                <p className="text-[45px] font-light leading-none tracking-tight">
+                  {snapshot.city}
+                </p>
+                <p className="temperature-value main-temperature mt-2 text-[96px] leading-none">
+                  {`${snapshot.temperature}${DEGREE}`}
+                </p>
+                <p className="sf-pro-text mt-2 text-[20px] font-semibold text-[#EBEBF5]">
+                  {snapshot.condition}
+                </p>
+                <p className="sf-pro-text mt-2 text-[20px] font-semibold text-white/90">
+                  H:{`${snapshot.tempMax}${DEGREE}`}/L:{`${snapshot.tempMin}${DEGREE}`}
+                </p>
+              </>
+            ) : (
+              <div className="mx-auto flex max-w-[240px] flex-col items-center gap-3">
+                <div className="skeleton-pulse h-10 w-40 rounded-full bg-white/15" />
+                <div className="skeleton-pulse h-20 w-32 rounded-[28px] bg-white/10" />
+                <div className="skeleton-pulse h-6 w-32 rounded-full bg-white/15" />
+                <div className="skeleton-pulse h-5 w-40 rounded-full bg-white/10" />
+              </div>
+            )}
             {snapshotError ? (
               <p className="sf-pro-text mt-3 text-[14px] font-medium text-white/80">
                 {snapshotError}
@@ -594,21 +611,32 @@ function App() {
                 items={forecastItems}
                 mode={mode}
                 direction={forecastSlideDirection}
-                loading={false}
+                loading={isLoadingSnapshot}
               />
-              <AirQualityCard
-                visible={true}
-                aqi={snapshot.airQuality?.aqi}
-                label={snapshot.airQuality?.label}
-              />
-              <div className='flex gap-2 mt-4'>
-                <UvIndexCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
-                <SunriseCard sunrise={snapshot.sunrise} sunset={snapshot.sunset} />
-              </div>
-              <div className='flex gap-2 mt-2'>
-                <WindCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
-                <RainfallCard rainfall={snapshot.rainfall}/>
-              </div>
+              {hasSnapshot ? (
+                <>
+                  <AirQualityCard
+                    visible={true}
+                    aqi={snapshot.airQuality?.aqi}
+                    label={snapshot.airQuality?.label}
+                  />
+                  <div className="flex gap-2 mt-4">
+                    <UvIndexCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
+                    <SunriseCard sunrise={snapshot.sunrise} sunset={snapshot.sunset} />
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <WindCard value={snapshot.uvIndex?.value} label={snapshot.uvIndex?.label} />
+                    <RainfallCard rainfall={snapshot.rainfall} />
+                  </div>
+                </>
+              ) : (
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div className="skeleton-pulse h-[120px] rounded-[24px] bg-white/10" />
+                  <div className="skeleton-pulse h-[120px] rounded-[24px] bg-white/10" />
+                  <div className="skeleton-pulse h-[120px] rounded-[24px] bg-white/10" />
+                  <div className="skeleton-pulse h-[120px] rounded-[24px] bg-white/10" />
+                </div>
+              )}
             </div>
           </div>
           <div
@@ -785,7 +813,7 @@ function App() {
                       loading="lazy"
                     />
 
-                    <span className="absolute bottom-3 right-6 z-10 text-[12px] font-medium text-white/80">
+                    <span className="absolute bottom-3 right-6 z-10 text-[12px] font-medium text-[#EBEBF5]">
                       {card.condition}
                     </span>
 
