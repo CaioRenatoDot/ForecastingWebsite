@@ -601,9 +601,9 @@ function App() {
           </div>
           <div
             ref={forecastContainerRef}
-            className={`overflow-hidden transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
+            className={`overflow-y-auto transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
               forecastVisible
-                ? 'mb-4 max-h-[1000px] translate-y-0 opacity-100'
+                ? 'mb-4 max-h-[520px] translate-y-0 opacity-100'
                 : 'mb-0 max-h-0 translate-y-6 opacity-0 pointer-events-none'
             }`}
           >    
