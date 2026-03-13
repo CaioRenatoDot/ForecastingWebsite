@@ -35,7 +35,7 @@ function ForecastItemCard({ item, mode, isActive, styleVariant = 'default' }) {
       <p className="-mt-[3px] text-sm font-semibold leading-none text-cyan-200">
         {detail}
       </p>
-      <p className="temperature-value mt-[26px] text-[20px] font-light leading-none">
+      <p className="temperature-value mt-[26px] text-[20px] font-[100] leading-none">
         {displayTemp}
       </p>
     </button>

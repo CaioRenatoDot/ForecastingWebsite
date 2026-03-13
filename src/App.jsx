@@ -296,6 +296,10 @@ function App() {
       return
     }
 
+    if (forecastContainerRef.current?.contains(event.target)) {
+      return
+    }
+
     if (event.target.closest('button, input, a')) {
       return
     }
@@ -566,7 +570,7 @@ function App() {
                 <p className="temperature-value main-temperature mt-2 text-[96px] leading-none">
                   {`${snapshot.temperature}${DEGREE}`}
                 </p>
-                <p className="sf-pro-text mt-2 text-[20px] font-semibold text-[#EBEBF5]">
+                <p className="sf-pro-text mt-2 text-[20px] font-semibold text-[#C7CAD6]">
                   {snapshot.condition}
                 </p>
                 <p className="sf-pro-text mt-2 text-[20px] font-semibold text-white/90">
@@ -603,7 +607,7 @@ function App() {
           </div>
           <div
             ref={forecastContainerRef}
-            className={`overflow-y-auto transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
+            className={`overscroll-contain overflow-y-auto transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
               forecastVisible
                 ? 'mb-4 max-h-[520px] translate-y-0 opacity-100'
                 : 'mb-0 max-h-0 translate-y-6 opacity-0 pointer-events-none'

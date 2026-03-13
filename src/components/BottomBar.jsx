@@ -31,7 +31,7 @@ function BottomBar({ onMenuClick, onAddClick, addPulse = false }) {
           data-forecast-button="true"
           aria-label="Open map"
           style={{ left: '53.5px', top: '79px' }}
-          className="liquid-glass-press absolute z-20 h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.33),rgba(255,255,255,0.09)_52%,rgba(76,84,160,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_10px_18px_rgba(16,12,56,0.34)] "
+          className="liquid-glass-press absolute z-20 h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.33),rgba(255,255,255,0.09)_52%,rgba(76,84,160,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_10px_18px_rgba(16,12,56,0.34)] hidden"
         >
           <img
             src={mapIcon}
@@ -46,8 +46,8 @@ function BottomBar({ onMenuClick, onAddClick, addPulse = false }) {
           data-forecast-button="true"
           aria-label="Open city list"
           onClick={onMenuClick}
-          style={{ left: '292px', top: '79.5px' }}
-          className="liquid-glass-press absolute z-20 h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.33),rgba(255,255,255,0.09)_52%,rgba(76,84,160,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_10px_18px_rgba(16,12,56,0.34)] "
+          style={{ left: '292px', top: '79px' }}
+          className="liquid-glass-press absolute z-20 h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.33),rgba(255,255,255,0.09)_52%,rgba(76,84,160,0.24)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_10px_18px_rgba(16,12,56,0.34)] hidden"
         >
           <img
             src={listIcon}
@@ -61,7 +61,7 @@ function BottomBar({ onMenuClick, onAddClick, addPulse = false }) {
           type="button"
           data-forecast-button="true"
           aria-label="Add city"
-          className={`plus-liquid-glass add-liquid-glass absolute bottom-[15px] left-1/2 z-30 flex h-16 w-16 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border border-white/45 bg-[linear-gradient(180deg,#f3f5fa_0%,#d1d9e8_100%)] text-[#59619f] shadow-[0_8px_20px_rgba(11,10,40,0.45)] ${
+          className={`plus-liquid-glass add-liquid-glass absolute bottom-[-35px] left-1/2 z-30 flex h-16 w-16 -translate-x-1/2 cursor-pointer items-center justify-center rounded-full border border-white/45 bg-[linear-gradient(180deg,#f3f5fa_0%,#d1d9e8_100%)] text-[#59619f] shadow-[0_8px_20px_rgba(11,10,40,0.45)] ${
             addPulse ? 'add-liquid-glass-active' : ''
           }`}
           onClick={onAddClick}

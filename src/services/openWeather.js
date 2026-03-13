@@ -1,3 +1,9 @@
+import moonCloudFastWindIcon from '../assets/Moon cloud fast wind.png'
+import moonCloudMidRainIcon from '../assets/Moon cloud mid rain.png'
+import sunCloudAngledRainIcon from '../assets/Sun cloud angled rain.png'
+import sunCloudMidRainIcon from '../assets/Sun cloud mid rain.png'
+import tornadoIcon from '../assets/Tornado.png'
+
 const OPEN_WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5'
 const OPEN_WEATHER_ONECALL_URL = 'https://api.openweathermap.org/data/3.0'
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -24,8 +30,35 @@ function resolveCountryName(countryCode) {
   return countryCode
 }
 
-function buildIconUrl(iconCode) {
-  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`
+function resolveLocalIcon(condition = '') {
+  const label = String(condition).toLowerCase()
+
+  if (
+    label.includes('tornado') ||
+    label.includes('tempest') ||
+    label.includes('thunder') ||
+    label.includes('storm')
+  ) {
+    return tornadoIcon
+  }
+  if (label.includes('vento') || label.includes('wind')) {
+    return moonCloudFastWindIcon
+  }
+  if (label.includes('neve') || label.includes('snow')) {
+    return sunCloudMidRainIcon
+  }
+  if (
+    label.includes('drizzle') ||
+    label.includes('chuvisco') ||
+    label.includes('showers')
+  ) {
+    return sunCloudAngledRainIcon
+  }
+  if (label.includes('chuva') || label.includes('rain')) {
+    return moonCloudMidRainIcon
+  }
+
+  return moonCloudMidRainIcon
 }
 
 function shiftDate(unixTimeInSeconds, timezoneOffsetInSeconds) {
@@ -101,23 +134,32 @@ async function requestJson(url) {
 }
 
 function buildHourlyForecast(currentWeather, forecastList, timezoneOffsetInSeconds) {
+  const nowConditionLabel =
+    currentWeather.weather[0]?.description ??
+    currentWeather.weather[0]?.main ??
+    'Weather'
   const nowItem = {
     id: `now-${currentWeather.dt}`,
     label: 'Now',
     temp: Math.round(currentWeather.main.temp),
     detail: `${Math.round((forecastList[0]?.pop ?? 0) * 100)}%`,
-    condition: currentWeather.weather[0]?.main ?? 'Weather',
-    icon: buildIconUrl(currentWeather.weather[0]?.icon ?? '01d'),
+    condition: toTitleCase(nowConditionLabel),
+    icon: resolveLocalIcon(nowConditionLabel),
   }
 
-  const nextItems = forecastList.slice(0, 5).map((item) => ({
-    id: `hourly-${item.dt}`,
-    label: formatHourLabel(item.dt, timezoneOffsetInSeconds),
-    temp: Math.round(item.main.temp),
-    detail: `${Math.round((item.pop ?? 0) * 100)}%`,
-    condition: item.weather[0]?.main ?? 'Weather',
-    icon: buildIconUrl(item.weather[0]?.icon ?? '01d'),
-  }))
+  const nextItems = forecastList.slice(0, 5).map((item) => {
+    const conditionLabel =
+      item.weather[0]?.description ?? item.weather[0]?.main ?? 'Weather'
+
+    return {
+      id: `hourly-${item.dt}`,
+      label: formatHourLabel(item.dt, timezoneOffsetInSeconds),
+      temp: Math.round(item.main.temp),
+      detail: `${Math.round((item.pop ?? 0) * 100)}%`,
+      condition: toTitleCase(conditionLabel),
+      icon: resolveLocalIcon(conditionLabel),
+    }
+  })
 
   return [nowItem, ...nextItems]
 }
@@ -154,14 +196,19 @@ function buildWeeklyForecast(forecastList, timezoneOffsetInSeconds) {
         return closest
       }, null)
 
+      const conditionLabel =
+        iconEntry?.entry.weather[0]?.description ??
+        iconEntry?.entry.weather[0]?.main ??
+        'Weather'
+
       return {
         id: `weekly-${entries[0].dt}`,
         label: index === 0 ? 'Today' : formatDayLabel(entries[0].dt, timezoneOffsetInSeconds),
         tempMax: Math.round(Math.max(...temperatures)),
         tempMin: Math.round(Math.min(...temperatures)),
         detail: `${Math.round(averageRainChance * 100)}%`,
-        condition: iconEntry?.entry.weather[0]?.main ?? 'Weather',
-        icon: buildIconUrl(iconEntry?.entry.weather[0]?.icon ?? '01d'),
+        condition: toTitleCase(conditionLabel),
+        icon: resolveLocalIcon(conditionLabel),
       }
     })
 }
