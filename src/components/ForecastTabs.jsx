@@ -1,3 +1,4 @@
+
 const TAB_OPTIONS = [
   { id: 'hourly', label: 'Hourly Forecast' },
   { id: 'weekly', label: 'Weekly Forecast' },
@@ -5,8 +6,8 @@ const TAB_OPTIONS = [
 
 function ForecastTabs({ mode, onModeChange }) {
   return (
-    <div className="rounded-2xl border border-white/18 bg-white/6 p-1.5 backdrop-blur-md">
-      <div className="grid grid-cols-2 gap-1.5">
+      <div className="relative w-full px-4">
+      <div className="relative flex mb-1">
         {TAB_OPTIONS.map((option) => {
           const isActive = option.id === mode
 
@@ -15,16 +16,25 @@ function ForecastTabs({ mode, onModeChange }) {
               key={option.id}
               type="button"
               onClick={() => onModeChange(option.id)}
-              className={`liquid-glass-press rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+              className={`flex-1 pt-2 pb-1 text-[15px] font-semibold tracking-wide transition-colors duration-500 ${
                 isActive
-                  ? 'bg-[linear-gradient(180deg,rgba(125,105,220,0.5)_0%,rgba(103,91,193,0.45)_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]'
-                  : 'text-white/68 hover:bg-white/8 hover:text-white/92'
+                  ? 'text-white'
+                  : 'text-white/40'
               }`}
             >
               {option.label}
             </button>
           )
-        })}
+        })} 
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/10" />
+      <div 
+        className={`absolute bottom-0 h-[2px] w-1/2 transition-all duration-500 ease-in-out px-8
+          ${mode === 'hourly' ? 'left-0' : 'left-1/2'}`}
+      >
+        <div className="relative h-full w-full bg-gradient-to-r from-transparent via-purple-400 to-transparent">
+          <div className="absolute inset-0 blur-[6px] bg-purple-500/80 shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
+        </div>
       </div>
     </div>
   )
