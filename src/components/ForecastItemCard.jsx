@@ -23,7 +23,7 @@ function ForecastItemCard({ item, mode, isActive, styleVariant = 'default' }) {
       type="button"
       className={`${baseClasses} ${toneClasses}`}
     >
-      <p className="text-xs font-semibold tracking-wide text-[#FFFFFF]">
+      <p className="whitespace-nowrap text-xs font-semibold tracking-wide text-[#FFFFFF]">
         {displayLabel}
       </p>
       <div className="mx-auto mt-[12px] flex h-8 w-8 items-center justify-center">
