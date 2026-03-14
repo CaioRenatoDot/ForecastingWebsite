@@ -10,7 +10,7 @@ function ForecastStrip({ items, mode, direction = 'right', loading }) {
           {Array.from({ length: 5 }).map((_, index) => (
             <div
               key={`loading-${index}`}
-              className="h-[142px] w-[82px] shrink-0 animate-pulse rounded-[24px] border border-white/25 bg-white/10"
+              className="h-[146px] w-[60px] shrink-0 animate-pulse rounded-[26px] border border-white/25 bg-white/10"
             />
           ))}
         </div>
@@ -44,7 +44,7 @@ function ForecastStrip({ items, mode, direction = 'right', loading }) {
                 : index === 0
 
             return (
-              <li key={item.id} className="w-[82px] shrink-0">
+              <li key={item.id} className="w-[60px] shrink-0">
                 <ForecastItemCard
                   item={item}
                   mode={mode}

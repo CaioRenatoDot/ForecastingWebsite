@@ -73,6 +73,45 @@ body {
   background-size: 110px 110px, 140px 140px, 175px 175px, 220px 220px;
 }
 
+.app-wallpaper {
+  opacity: 0.8;
+  transition: opacity 0.5s ease;
+}
+
+.app-bottom-glow {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.app-shell--condensed .app-wallpaper {
+  opacity: 0.45;
+}
+
+.app-shell--condensed .app-bottom-glow {
+  opacity: 0.75;
+}
+
+.app-condense-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% -15%, rgba(166, 129, 216, 0.35), transparent 46%),
+    linear-gradient(
+      180deg,
+      rgba(90, 59, 147, 0.7) 0%,
+      rgba(62, 39, 111, 0.86) 55%,
+      rgba(42, 23, 78, 0.98) 100%
+    );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.app-condense-overlay--active {
+  opacity: 1;
+}
+
 .forecast-scrollbar::-webkit-scrollbar {
   height: 5px;
 }

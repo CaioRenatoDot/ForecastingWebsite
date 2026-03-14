@@ -6,7 +6,7 @@ function ForecastItemCard({ item, mode, isActive, styleVariant = 'default' }) {
   const detail = item.detail ?? '--'
 
   const baseClasses =
-    'liquid-glass-press relative h-[142px] w-full rounded-[26px] border p-3 text-center text-white'
+    'liquid-glass-press relative h-[146px] w-full rounded-[26px] border p-3 text-center text-white'
 
   const defaultClasses = isActive
     ? 'border-indigo-200/48 bg-[linear-gradient(180deg,rgba(105,91,215,0.8)_0%,rgba(83,74,182,0.88)_100%)] shadow-[0_10px_22px_rgba(34,28,90,0.35)]'
@@ -26,12 +26,14 @@ function ForecastItemCard({ item, mode, isActive, styleVariant = 'default' }) {
       <p className="text-xs font-semibold tracking-wide text-[#FFFFFF]">
         {displayLabel}
       </p>
-      <img
-        src={item.icon}
-        alt={item.condition}
-        className="weather-icon mx-auto mt-[12px] h-8 w-8 object-contain"
-        loading="lazy"
-      />
+      <div className="mx-auto mt-[12px] flex h-8 w-8 items-center justify-center">
+        <img
+          src={item.icon}
+          alt={item.condition}
+          className="weather-icon block h-full w-full object-contain"
+          loading="lazy"
+        />
+      </div>
       <p className="-mt-[3px] text-sm font-semibold leading-none text-cyan-200">
         {detail}
       </p>

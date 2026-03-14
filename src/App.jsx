@@ -94,11 +94,10 @@ const CITY_CARDS = [
 ]
 
 function formatLocalTime(date = new Date()) {
-  return new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).format(date)
+  const hours = date.getHours()
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const hour12 = hours % 12 || 12
+  return `${hour12}:${minutes}`
 }
 
 function resolveCardIcon(condition = '') {
@@ -163,6 +162,7 @@ function App() {
 
   const forecastItems = mode === 'hourly' ? snapshot?.hourly ?? [] : snapshot?.weekly ?? []
   const hasSnapshot = Boolean(snapshot)
+  const isCondensedHeader = forecastVisible
 
   const openCityScreen = () => {
     setCityScreenOpen(true)
@@ -524,9 +524,13 @@ function App() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--app-bg)] px-4 py-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.35),transparent_35%),radial-gradient(circle_at_85%_10%,rgba(255,255,255,0.25),transparent_32%),radial-gradient(circle_at_10%_85%,rgba(86,46,139,0.35),transparent_45%)]" />
-      <section className="relative h-211 w-97.5 overflow-hidden rounded-[42px] border border-white/20 bg-[var(--app-surface)] shadow-[0_24px_80px_rgba(23,10,52,0.45)]">
+      <section
+        className={`app-shell relative h-211 w-97.5 overflow-hidden rounded-[42px] border border-white/20 bg-[var(--app-surface)] shadow-[0_24px_80px_rgba(23,10,52,0.45)] ${
+          isCondensedHeader ? 'app-shell--condensed' : ''
+        }`}
+      >
         <div
-          className="pointer-events-none absolute inset-0 opacity-80"
+          className="app-wallpaper pointer-events-none absolute inset-0"
           style={{
             backgroundImage: `url(${appBackgroundImage})`,
             backgroundSize: 'cover',
@@ -534,9 +538,14 @@ function App() {
             backgroundRepeat: 'no-repeat',
           }}
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[280px] bg-[linear-gradient(180deg,rgba(97,119,165,0)_0%,rgba(95,133,170,0.5)_30%,rgba(63,52,126,0.95)_100%)]" />
+        <div className="app-bottom-glow pointer-events-none absolute inset-x-0 bottom-0 h-[280px] bg-[linear-gradient(180deg,rgba(97,119,165,0)_0%,rgba(95,133,170,0.5)_30%,rgba(63,52,126,0.95)_100%)]" />
+        <div
+          className={`app-condense-overlay ${
+            isCondensedHeader ? 'app-condense-overlay--active' : ''
+          }`}
+        />
 
-        <div className="relative z-10 px-7 pt-5 text-white">
+        <div className="relative z-30 px-7 pt-5 text-white pointer-events-none">
           <header className="flex items-center justify-between text-xs font-medium text-white/90">
             <span>{localTime}</span>
             <div className="flex items-center gap-1.5">
@@ -561,19 +570,42 @@ function App() {
             </div>
           </header>
 
-          <div className="mt-12 text-center">
+          <div className={`text-center ${isCondensedHeader ? 'mt-6' : 'mt-12'}`}>
             {hasSnapshot ? (
               <>
-                <p className="text-[45px] font-light leading-none tracking-tight">
+                <p
+                  className={`main-city font-light leading-none tracking-tight ${
+                    isCondensedHeader ? 'text-[32px]' : 'text-[45px]'
+                  }`}
+                >
                   {snapshot.city}
                 </p>
-                <p className="temperature-value main-temperature mt-2 text-[96px] leading-none">
+                <p
+                  className={`main-summary sf-pro-text mt-2 text-[16px] font-medium leading-tight text-[#C7CAD6] ${
+                    isCondensedHeader ? 'block' : 'hidden'
+                  }`}
+                >
+                  {`${snapshot.temperature}${DEGREE} | ${snapshot.condition}`}
+                </p>
+                <p
+                  className={`main-temp temperature-value main-temperature mt-2 text-[96px] leading-none ${
+                    isCondensedHeader ? 'hidden' : 'block'
+                  }`}
+                >
                   {`${snapshot.temperature}${DEGREE}`}
                 </p>
-                <p className="sf-pro-text mt-2 text-[20px] font-semibold text-[#C7CAD6]">
+                <p
+                  className={`main-condition sf-pro-text mt-2 text-[20px] font-semibold text-[#C7CAD6] ${
+                    isCondensedHeader ? 'hidden' : 'block'
+                  }`}
+                >
                   {snapshot.condition}
                 </p>
-                <p className="sf-pro-text mt-2 text-[20px] font-semibold text-white/90">
+                <p
+                  className={`main-range sf-pro-text mt-2 text-[20px] font-semibold text-white/90 ${
+                    isCondensedHeader ? 'hidden' : 'block'
+                  }`}
+                >
                   H:{`${snapshot.tempMax}${DEGREE}`}/L:{`${snapshot.tempMin}${DEGREE}`}
                 </p>
               </>
