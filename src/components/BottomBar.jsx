@@ -48,7 +48,7 @@ function BottomBar({ onMenuClick, onAddClick, addPulse = false }) {
           onPointerDown={(e) => e.stopPropagation()}
           onClick={onAddClick}
           style={{ left: '340px', top: '79px' }}
-          className="absolute z-20 h-11 w-11 -translate-y-1/2 rounded-full bg-transparent border-0 shadow-none"
+          className="absolute z-20 h-16 w-17 -translate-y-1/2 rounded-full bg-transparent border-0 shadow-none"
         >
         </button>
 
