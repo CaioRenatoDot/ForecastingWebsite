@@ -712,8 +712,8 @@ function App() {
           />
 
           <BottomBar
-            onMenuClick={openCityScreen}
-            onAddClick={handleAddButtonClick}
+            onMenuClick={() => setForecastVisible(true)}
+            onAddClick={openCityScreen}
             addPulse={addPulse}
           />
         </div>
