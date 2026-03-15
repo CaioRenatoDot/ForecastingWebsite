@@ -1,4 +1,4 @@
-# 🌤️ Weather Forecasting App - IHC Project
+# 🌤️ Weather Forecasting App - IHC 
 
 Um aplicativo de previsão do tempo moderno e responsivo, desenvolvido como projeto prático para a disciplina de **Interação Humano-Computador (IHC)**. O objetivo principal foi traduzir um design de alta fidelidade do Figma para uma aplicação funcional, focando em usabilidade e feedback visual.
 
@@ -7,7 +7,6 @@ Um aplicativo de previsão do tempo moderno e responsivo, desenvolvido como proj
 ## 📸 Screenshot
 
 <img width="1280" height="720" alt="Image" src="https://github.com/user-attachments/assets/596df8fb-a39e-45eb-9cb0-f68767e01aaa" />
----
 
 ## 🛠️ Tecnologias Utilizadas
 
