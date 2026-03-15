@@ -6,8 +6,7 @@ Um aplicativo de previsão do tempo moderno e responsivo, desenvolvido como proj
 
 ## 📸 Screenshot
 
-> _Adicione aqui uma screenshot ou GIF da interface do projeto_
-
+<img width="1280" height="720" alt="Image" src="https://github.com/user-attachments/assets/596df8fb-a39e-45eb-9cb0-f68767e01aaa" />
 ---
 
 ## 🛠️ Tecnologias Utilizadas
