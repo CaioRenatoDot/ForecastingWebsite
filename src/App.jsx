@@ -632,20 +632,12 @@ function App() {
           onPointerMove={handleForecastPointerMove}
           onPointerUp={finishForecastDrag}
           onPointerCancel={finishForecastDrag}
-          className="absolute inset-x-0 bottom-0 z-20 rounded-t-[36px] border-t border-white/22 bg-[linear-gradient(180deg,rgba(46,51,90,0.26)_0%,rgba(28,27,51,0.26)_100%)] px-4 pt-4 backdrop-blur-xl touch-pan-x"
+          className="absolute inset-x-0 bottom-0 z-20 rounded-t-[36px] border-t border-white/22 bg-[linear-gradient(180deg,rgba(46,51,90,0.26)_0%,rgba(28,27,51,0.26)_100%)] px-4 pt-4 backdrop-blur-xl touch-pan-x max-h-[85%] flex flex-col"
         >
-          <div className="mb-3 flex justify-center">
+          <div className="mb-3 flex justify-center flex-shrink-0">
             <span className="h-1.5 w-12 rounded-full bg-white/30" />
           </div>
-          <div
-            ref={forecastContainerRef}
-            className={`overscroll-contain overflow-y-auto transition-[max-height,opacity,transform,margin] duration-500 ease-out ${
-              forecastVisible
-                ? 'mb-4 max-h-[520px] translate-y-0 opacity-100'
-                : 'mb-0 max-h-0 translate-y-6 opacity-0 pointer-events-none'
-            }`}
-          >    
-            <div>
+            <div ref={forecastContainerRef} className='overscroll-contain overflow-y-auto flex-1 min-h-0'>
               <ForecastTabs mode={mode} onModeChange={handleModeChange} />
               <ForecastStrip
                 items={forecastItems}
@@ -653,6 +645,11 @@ function App() {
                 direction={forecastSlideDirection}
                 loading={isLoadingSnapshot}
               />
+                <div className={`transition-[max-height,opacity] duration-500 ease-out ${
+                  forecastVisible
+                    ? 'mb-4 max-h-[520px] opacity-100'
+                    : 'mb-0 max-h-0 opacity-0 overflow-hidden pointer-events-none'
+                }`}>
               {hasSnapshot ? (
                 <>
                   <AirQualityCard
@@ -706,7 +703,7 @@ function App() {
             </div>
           </div>
           <div
-            aria-hidden="true"
+            
             style={{ height: `${forecastRise}px` }}
             className={draggingForecast ? '' : 'transition-[height] duration-300 ease-out'}
           />
